@@ -427,15 +427,13 @@ func *(lhs: UInt64, rhs: UInt64) -> UInt64
 
 func *(lhs: Int32, rhs: Int32) -> Int32
 
-func *=(inout lhs: Int16, rhs: Int16)
-
-func *=(inout lhs: Double, rhs: Double)
-
 func *=(inout lhs: UInt8, rhs: UInt8)
 
 func *=(inout lhs: Int8, rhs: Int8)
 
 func *=(inout lhs: UInt16, rhs: UInt16)
+
+func *=(inout lhs: Int16, rhs: Int16)
 
 func *=(inout lhs: UInt32, rhs: UInt32)
 
@@ -451,12 +449,14 @@ func *=(inout lhs: Int, rhs: Int)
 
 func *=(inout lhs: Float, rhs: Float)
 
+func *=(inout lhs: Double, rhs: Double)
+
+func *=(inout lhs: Float80, rhs: Float80)
+
 
 /// multiply `lhs` and `rhs` and store the result in `lhs`, trapping in
 /// case of arithmetic overflow (except in -Ounchecked builds).
 func *=<T : _IntegerArithmeticType>(inout lhs: T, rhs: T)
-
-func *=(inout lhs: Float80, rhs: Float80)
 
 prefix func +(x: Double) -> Double
 
