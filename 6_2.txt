@@ -458,60 +458,11 @@ func *=(inout lhs: Float80, rhs: Float80)
 /// case of arithmetic overflow (except in -Ounchecked builds).
 func *=<T : _IntegerArithmeticType>(inout lhs: T, rhs: T)
 
-prefix func +(x: Double) -> Double
-
-func +(lhs: Float, rhs: Float) -> Float
-
-func +<T>(lhs: Int, rhs: UnsafePointer<T>) -> UnsafePointer<T>
-
-prefix func +(x: Float) -> Float
-
-func +(lhs: Int, rhs: Int) -> Int
-
-func +<T>(lhs: UnsafePointer<T>, rhs: Int) -> UnsafePointer<T>
-
-func +(lhs: UInt, rhs: UInt) -> UInt
-
-func +(lhs: Int64, rhs: Int64) -> Int64
-
-func +(lhs: UInt64, rhs: UInt64) -> UInt64
-
-func +<T>(lhs: Int, rhs: UnsafeMutablePointer<T>) -> UnsafeMutablePointer<T>
-
-func +<T>(lhs: UnsafeMutablePointer<T>, rhs: Int) -> UnsafeMutablePointer<T>
-
-func +(lhs: Int32, rhs: Int32) -> Int32
-
-func +(lhs: UInt32, rhs: UInt32) -> UInt32
-
-func +(lhs: Int16, rhs: Int16) -> Int16
-
-func +(lhs: UInt16, rhs: UInt16) -> UInt16
-
-func +(lhs: Int8, rhs: Int8) -> Int8
-
-func +(lhs: UInt8, rhs: UInt8) -> UInt8
-
-func +(lhs: Double, rhs: Double) -> Double
-
-func +(lhs: String, rhs: String) -> String
-
-prefix func +(x: Float80) -> Float80
-
-func +(lhs: Float80, rhs: Float80) -> Float80
-
-
-/// Add `lhs` and `rhs`, returning a result and trapping in case of
-/// arithmetic overflow (except in -Ounchecked builds).
-func +<T : _IntegerArithmeticType>(lhs: T, rhs: T) -> T
-
 prefix func +<T : _SignedNumberType>(x: T) -> T
 
 func +<C : _ExtensibleCollectionType, S : SequenceType where S.Generator.Element == S.Generator.Element>(lhs: C, rhs: S) -> C
 
 func +<C : _ExtensibleCollectionType, S : SequenceType where S.Generator.Element == S.Generator.Element>(lhs: S, rhs: C) -> C
-
-func +<T : Strideable>(lhs: T.Stride, rhs: T) -> T
 
 func +<C : _ExtensibleCollectionType, S : CollectionType where S.Generator.Element == S.Generator.Element>(lhs: C, rhs: S) -> C
 
@@ -519,61 +470,112 @@ func +<EC1 : _ExtensibleCollectionType, EC2 : _ExtensibleCollectionType where EC
 
 func +<T : Strideable>(lhs: T, rhs: T.Stride) -> T
 
-prefix func ++(inout x: Int8) -> Int8
+func +<T : Strideable>(lhs: T.Stride, rhs: T) -> T
 
-prefix func ++(inout x: Int16) -> Int16
+func +(lhs: String, rhs: String) -> String
 
-postfix func ++<T : _Incrementable>(inout x: T) -> T
+func +<T>(lhs: UnsafeMutablePointer<T>, rhs: Int) -> UnsafeMutablePointer<T>
 
-prefix func ++<T : _Incrementable>(inout x: T) -> T
+func +<T>(lhs: Int, rhs: UnsafeMutablePointer<T>) -> UnsafeMutablePointer<T>
 
-postfix func ++(inout lhs: Float80) -> Float80
+func +<T>(lhs: UnsafePointer<T>, rhs: Int) -> UnsafePointer<T>
 
-prefix func ++(inout rhs: Float80) -> Float80
+func +<T>(lhs: Int, rhs: UnsafePointer<T>) -> UnsafePointer<T>
 
-postfix func ++(inout lhs: Double) -> Double
+func +(lhs: UInt8, rhs: UInt8) -> UInt8
 
-prefix func ++(inout rhs: Double) -> Double
+func +(lhs: Int8, rhs: Int8) -> Int8
 
-postfix func ++(inout lhs: Float) -> Float
+func +(lhs: UInt16, rhs: UInt16) -> UInt16
 
-prefix func ++(inout rhs: Float) -> Float
+func +(lhs: Int16, rhs: Int16) -> Int16
 
-postfix func ++(inout x: Int) -> Int
+func +(lhs: UInt32, rhs: UInt32) -> UInt32
 
-prefix func ++(inout x: Int) -> Int
+func +(lhs: Int32, rhs: Int32) -> Int32
 
-postfix func ++(inout x: UInt) -> UInt
+func +(lhs: UInt64, rhs: UInt64) -> UInt64
 
-prefix func ++(inout x: UInt) -> UInt
+func +(lhs: Int64, rhs: Int64) -> Int64
 
-postfix func ++(inout x: Int64) -> Int64
+func +(lhs: UInt, rhs: UInt) -> UInt
 
-prefix func ++(inout x: Int64) -> Int64
+func +(lhs: Int, rhs: Int) -> Int
 
-postfix func ++(inout x: UInt64) -> UInt64
+prefix func +(x: Float) -> Float
 
-prefix func ++(inout x: UInt64) -> UInt64
 
-postfix func ++(inout x: Int32) -> Int32
+/// Add `lhs` and `rhs`, returning a result and trapping in case of
+/// arithmetic overflow (except in -Ounchecked builds).
+func +<T : _IntegerArithmeticType>(lhs: T, rhs: T) -> T
 
-prefix func ++(inout x: Int32) -> Int32
+func +(lhs: Float80, rhs: Float80) -> Float80
 
-postfix func ++(inout x: UInt32) -> UInt32
+prefix func +(x: Float80) -> Float80
 
-prefix func ++(inout x: UInt32) -> UInt32
+func +(lhs: Double, rhs: Double) -> Double
 
-postfix func ++(inout x: Int16) -> Int16
+prefix func +(x: Double) -> Double
 
-postfix func ++(inout x: UInt16) -> UInt16
-
-prefix func ++(inout x: UInt16) -> UInt16
-
-postfix func ++(inout x: Int8) -> Int8
+func +(lhs: Float, rhs: Float) -> Float
 
 prefix func ++(inout x: UInt8) -> UInt8
 
 postfix func ++(inout x: UInt8) -> UInt8
+
+prefix func ++(inout x: Int8) -> Int8
+
+prefix func ++(inout x: UInt64) -> UInt64
+
+postfix func ++(inout x: UInt64) -> UInt64
+
+prefix func ++(inout x: Int64) -> Int64
+
+postfix func ++(inout x: Int64) -> Int64
+
+prefix func ++(inout x: UInt) -> UInt
+
+postfix func ++(inout x: UInt) -> UInt
+
+prefix func ++(inout x: Int) -> Int
+
+postfix func ++(inout x: Int) -> Int
+
+prefix func ++(inout rhs: Float) -> Float
+
+postfix func ++(inout lhs: Float) -> Float
+
+prefix func ++(inout rhs: Double) -> Double
+
+postfix func ++(inout lhs: Double) -> Double
+
+prefix func ++(inout rhs: Float80) -> Float80
+
+postfix func ++(inout lhs: Float80) -> Float80
+
+prefix func ++<T : _Incrementable>(inout x: T) -> T
+
+postfix func ++<T : _Incrementable>(inout x: T) -> T
+
+postfix func ++(inout x: Int8) -> Int8
+
+prefix func ++(inout x: UInt16) -> UInt16
+
+postfix func ++(inout x: UInt16) -> UInt16
+
+prefix func ++(inout x: Int16) -> Int16
+
+postfix func ++(inout x: Int16) -> Int16
+
+prefix func ++(inout x: UInt32) -> UInt32
+
+postfix func ++(inout x: UInt32) -> UInt32
+
+prefix func ++(inout x: Int32) -> Int32
+
+postfix func ++(inout x: Int32) -> Int32
+
+func +=(inout lhs: UInt8, rhs: UInt8)
 
 
 /// Extend `lhs` with the elements of `rhs`
@@ -639,8 +641,6 @@ func +=<T, C : CollectionType where T == T>(inout lhs: _ContiguousArrayBuffer<T>
 func +=<T>(inout lhs: _ContiguousArrayBuffer<T>, rhs: T)
 
 func +=(inout lhs: Int16, rhs: Int16)
-
-func +=(inout lhs: UInt8, rhs: UInt8)
 
 func +=(inout lhs: UInt16, rhs: UInt16)
 
