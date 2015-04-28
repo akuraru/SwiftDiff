@@ -579,15 +579,15 @@ func +=(inout lhs: UInt8, rhs: UInt8)
 
 
 /// Extend `lhs` with the elements of `rhs`
-func +=<T, S : SequenceType where T == T>(inout lhs: ContiguousArray<T>, rhs: S)
+func +=<T, C : CollectionType where T == T>(inout lhs: [T], rhs: C)
 
 func +=<T>(inout lhs: UnsafePointer<T>, rhs: Int)
 
-
-/// Extend `lhs` with the elements of `rhs`
-func +=<T, C : CollectionType where T == T>(inout lhs: ContiguousArray<T>, rhs: C)
-
 func +=<T>(inout lhs: UnsafeMutablePointer<T>, rhs: Int)
+
+
+/// Append rhs to lhs
+func +=<T>(inout lhs: _ContiguousArrayBuffer<T>, rhs: T)
 
 func +=(inout lhs: String, rhs: String)
 
@@ -610,6 +610,30 @@ func +=(inout lhs: UInt, rhs: UInt)
 
 func +=(inout lhs: Int64, rhs: Int64)
 
+func +=(inout lhs: UInt64, rhs: UInt64)
+
+func +=(inout lhs: Int32, rhs: Int32)
+
+func +=(inout lhs: UInt32, rhs: UInt32)
+
+func +=(inout lhs: Int16, rhs: Int16)
+
+func +=(inout lhs: UInt16, rhs: UInt16)
+
+func +=(inout lhs: Int8, rhs: Int8)
+
+
+/// Append the elements of rhs to lhs
+func +=<T, C : CollectionType where T == T>(inout lhs: _ContiguousArrayBuffer<T>, rhs: C)
+
+
+/// Extend `lhs` with the elements of `rhs`
+func +=<T, S : SequenceType where T == T>(inout lhs: ContiguousArray<T>, rhs: S)
+
+
+/// Extend `lhs` with the elements of `rhs`
+func +=<T, C : CollectionType where T == T>(inout lhs: ContiguousArray<T>, rhs: C)
+
 
 /// Extend `lhs` with the elements of `rhs`
 func +=<T, S : SequenceType where T == T>(inout lhs: Slice<T>, rhs: S)
@@ -618,61 +642,11 @@ func +=<T, S : SequenceType where T == T>(inout lhs: Slice<T>, rhs: S)
 /// Extend `lhs` with the elements of `rhs`
 func +=<T, C : CollectionType where T == T>(inout lhs: Slice<T>, rhs: C)
 
-func +=(inout lhs: UInt64, rhs: UInt64)
-
-func +=(inout lhs: Int32, rhs: Int32)
-
 
 /// Extend `lhs` with the elements of `rhs`
 func +=<T, S : SequenceType where T == T>(inout lhs: [T], rhs: S)
 
-func +=(inout lhs: UInt32, rhs: UInt32)
-
-
-/// Extend `lhs` with the elements of `rhs`
-func +=<T, C : CollectionType where T == T>(inout lhs: [T], rhs: C)
-
-
-/// Append the elements of rhs to lhs
-func +=<T, C : CollectionType where T == T>(inout lhs: _ContiguousArrayBuffer<T>, rhs: C)
-
-
-/// Append rhs to lhs
-func +=<T>(inout lhs: _ContiguousArrayBuffer<T>, rhs: T)
-
-func +=(inout lhs: Int16, rhs: Int16)
-
-func +=(inout lhs: UInt16, rhs: UInt16)
-
-func +=(inout lhs: Int8, rhs: Int8)
-
-func -(lhs: UInt64, rhs: UInt64) -> UInt64
-
-func -(lhs: Float, rhs: Float) -> Float
-
-func -(lhs: Int32, rhs: Int32) -> Int32
-
-func -(lhs: Int64, rhs: Int64) -> Int64
-
-func -(lhs: UInt, rhs: UInt) -> UInt
-
-func -(lhs: Int, rhs: Int) -> Int
-
-func -(lhs: UInt32, rhs: UInt32) -> UInt32
-
-func -(lhs: Int16, rhs: Int16) -> Int16
-
 func -(lhs: UInt16, rhs: UInt16) -> UInt16
-
-func -(lhs: Int8, rhs: Int8) -> Int8
-
-func -(lhs: UInt8, rhs: UInt8) -> UInt8
-
-func -<T>(lhs: UnsafePointer<T>, rhs: UnsafePointer<T>) -> Int
-
-func -<T>(lhs: UnsafePointer<T>, rhs: Int) -> UnsafePointer<T>
-
-func -<T>(lhs: UnsafeMutablePointer<T>, rhs: UnsafeMutablePointer<T>) -> Int
 
 func -<T>(lhs: UnsafeMutablePointer<T>, rhs: Int) -> UnsafeMutablePointer<T>
 
@@ -695,55 +669,47 @@ func -(lhs: Double, rhs: Double) -> Double
 
 prefix func -(x: Double) -> Double
 
+func -(lhs: Float, rhs: Float) -> Float
+
 prefix func -(x: Float) -> Float
 
-prefix func --(inout rhs: Float) -> Float
+func -(lhs: Int, rhs: Int) -> Int
 
-postfix func --(inout x: UInt) -> UInt
+func -(lhs: UInt, rhs: UInt) -> UInt
 
-postfix func --(inout lhs: Float80) -> Float80
+func -(lhs: Int64, rhs: Int64) -> Int64
 
-prefix func --(inout x: UInt) -> UInt
+func -(lhs: UInt64, rhs: UInt64) -> UInt64
 
-postfix func --(inout lhs: Float) -> Float
+func -(lhs: Int32, rhs: Int32) -> Int32
 
-postfix func --(inout x: Int64) -> Int64
+func -(lhs: UInt32, rhs: UInt32) -> UInt32
+
+func -(lhs: Int16, rhs: Int16) -> Int16
+
+func -(lhs: UInt8, rhs: UInt8) -> UInt8
+
+func -(lhs: Int8, rhs: Int8) -> Int8
+
+func -<T>(lhs: UnsafeMutablePointer<T>, rhs: UnsafeMutablePointer<T>) -> Int
+
+func -<T>(lhs: UnsafePointer<T>, rhs: Int) -> UnsafePointer<T>
+
+func -<T>(lhs: UnsafePointer<T>, rhs: UnsafePointer<T>) -> Int
 
 prefix func --(inout x: Int64) -> Int64
 
-prefix func --(inout rhs: Double) -> Double
-
-postfix func --(inout x: UInt64) -> UInt64
-
-postfix func --(inout lhs: Double) -> Double
+postfix func --(inout x: UInt) -> UInt
 
 prefix func --(inout x: UInt8) -> UInt8
 
-prefix func --(inout rhs: Float80) -> Float80
-
 postfix func --(inout x: UInt8) -> UInt8
 
-prefix func --(inout x: UInt64) -> UInt64
-
 prefix func --(inout x: Int8) -> Int8
-
-postfix func --(inout x: Int) -> Int
-
-postfix func --(inout x: Int32) -> Int32
-
-prefix func --(inout x: Int32) -> Int32
-
-postfix func --<T : _BidirectionalIndexType>(inout x: T) -> T
-
-postfix func --(inout x: UInt32) -> UInt32
 
 postfix func --(inout x: Int8) -> Int8
 
 prefix func --(inout x: UInt16) -> UInt16
-
-prefix func --(inout x: UInt32) -> UInt32
-
-prefix func --<T : _BidirectionalIndexType>(inout x: T) -> T
 
 postfix func --(inout x: UInt16) -> UInt16
 
@@ -751,7 +717,41 @@ prefix func --(inout x: Int16) -> Int16
 
 postfix func --(inout x: Int16) -> Int16
 
+prefix func --(inout x: UInt32) -> UInt32
+
+postfix func --(inout x: UInt32) -> UInt32
+
+prefix func --(inout x: Int32) -> Int32
+
+postfix func --<T : _BidirectionalIndexType>(inout x: T) -> T
+
+prefix func --<T : _BidirectionalIndexType>(inout x: T) -> T
+
+postfix func --(inout lhs: Float80) -> Float80
+
+prefix func --(inout rhs: Float80) -> Float80
+
+postfix func --(inout lhs: Double) -> Double
+
+prefix func --(inout rhs: Double) -> Double
+
+postfix func --(inout lhs: Float) -> Float
+
+prefix func --(inout rhs: Float) -> Float
+
+postfix func --(inout x: Int) -> Int
+
 prefix func --(inout x: Int) -> Int
+
+postfix func --(inout x: Int32) -> Int32
+
+prefix func --(inout x: UInt) -> UInt
+
+postfix func --(inout x: Int64) -> Int64
+
+prefix func --(inout x: UInt64) -> UInt64
+
+postfix func --(inout x: UInt64) -> UInt64
 
 func -=(inout lhs: UInt64, rhs: UInt64)
 
