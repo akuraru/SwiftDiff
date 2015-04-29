@@ -753,9 +753,15 @@ prefix func --(inout x: UInt64) -> UInt64
 
 postfix func --(inout x: UInt64) -> UInt64
 
-func -=(inout lhs: UInt64, rhs: UInt64)
+func -=(inout lhs: UInt, rhs: UInt)
 
 func -=(inout lhs: Int64, rhs: Int64)
+
+func -=<T : Strideable>(inout lhs: T, rhs: T.Stride)
+
+func -=<T>(inout lhs: UnsafeMutablePointer<T>, rhs: Int)
+
+func -=<T>(inout lhs: UnsafePointer<T>, rhs: Int)
 
 func -=(inout lhs: UInt8, rhs: UInt8)
 
@@ -763,30 +769,24 @@ func -=(inout lhs: Int8, rhs: Int8)
 
 func -=(inout lhs: UInt16, rhs: UInt16)
 
-func -=<T>(inout lhs: UnsafePointer<T>, rhs: Int)
+func -=(inout lhs: Int16, rhs: Int16)
+
+func -=(inout lhs: UInt32, rhs: UInt32)
 
 func -=(inout lhs: Int32, rhs: Int32)
 
-func -=<T>(inout lhs: UnsafeMutablePointer<T>, rhs: Int)
-
-func -=<T : Strideable>(inout lhs: T, rhs: T.Stride)
+func -=(inout lhs: UInt64, rhs: UInt64)
 
 
 /// subtract `lhs` and `rhs` and store the result in `lhs`, trapping in
 /// case of arithmetic overflow (except in -Ounchecked builds).
 func -=<T : _IntegerArithmeticType>(inout lhs: T, rhs: T)
 
-func -=(inout lhs: UInt32, rhs: UInt32)
-
-func -=(inout lhs: Int16, rhs: Int16)
-
 func -=(inout lhs: Float80, rhs: Float80)
 
 func -=(inout lhs: Double, rhs: Double)
 
 func -=(inout lhs: Float, rhs: Float)
-
-func -=(inout lhs: UInt, rhs: UInt)
 
 func -=(inout lhs: Int, rhs: Int)
 
@@ -795,18 +795,13 @@ func -=(inout lhs: Int, rhs: Int)
 func ...<T : Comparable>(start: T, end: T) -> ClosedInterval<T>
 
 
-/// Forms a closed range that contains both `start` and `end`.
-/// Requres: `start <= end`
-func ...<Pos : ForwardIndexType where Pos : Comparable>(start: Pos, end: Pos) -> Range<Pos>
-
-
 /// Forms a closed range that contains both `minimum` and `maximum`.
 func ...<Pos : ForwardIndexType>(minimum: Pos, maximum: Pos) -> Range<Pos>
 
 
-/// Forms a half-open range that contains `start`, but not
-/// `end`.  Requires: `start <= end`
-func ..<<Pos : ForwardIndexType where Pos : Comparable>(start: Pos, end: Pos) -> Range<Pos>
+/// Forms a closed range that contains both `start` and `end`.
+/// Requres: `start <= end`
+func ...<Pos : ForwardIndexType where Pos : Comparable>(start: Pos, end: Pos) -> Range<Pos>
 
 
 /// Forms a half-open range that contains `minimum`, but not
@@ -816,6 +811,29 @@ func ..<<Pos : ForwardIndexType>(minimum: Pos, maximum: Pos) -> Range<Pos>
 
 /// Returns a half-open interval from `start` to `end`
 func ..<<T : Comparable>(start: T, end: T) -> HalfOpenInterval<T>
+
+
+/// Forms a half-open range that contains `start`, but not
+/// `end`.  Requires: `start <= end`
+func ..<<Pos : ForwardIndexType where Pos : Comparable>(start: Pos, end: Pos) -> Range<Pos>
+
+func /(lhs: UInt16, rhs: UInt16) -> UInt16
+
+func /(lhs: Int8, rhs: Int8) -> Int8
+
+func /(lhs: UInt8, rhs: UInt8) -> UInt8
+
+func /(lhs: Int16, rhs: Int16) -> Int16
+
+func /(lhs: UInt32, rhs: UInt32) -> UInt32
+
+func /(lhs: Int32, rhs: Int32) -> Int32
+
+func /(lhs: UInt64, rhs: UInt64) -> UInt64
+
+func /(lhs: Int64, rhs: Int64) -> Int64
+
+func /(lhs: UInt, rhs: UInt) -> UInt
 
 func /(lhs: Float, rhs: Float) -> Float
 
@@ -829,24 +847,6 @@ func /(lhs: Float80, rhs: Float80) -> Float80
 func /<T : _IntegerArithmeticType>(lhs: T, rhs: T) -> T
 
 func /(lhs: Int, rhs: Int) -> Int
-
-func /(lhs: Int64, rhs: Int64) -> Int64
-
-func /(lhs: UInt64, rhs: UInt64) -> UInt64
-
-func /(lhs: Int32, rhs: Int32) -> Int32
-
-func /(lhs: UInt32, rhs: UInt32) -> UInt32
-
-func /(lhs: Int16, rhs: Int16) -> Int16
-
-func /(lhs: UInt16, rhs: UInt16) -> UInt16
-
-func /(lhs: Int8, rhs: Int8) -> Int8
-
-func /(lhs: UInt8, rhs: UInt8) -> UInt8
-
-func /(lhs: UInt, rhs: UInt) -> UInt
 
 func /=(inout lhs: Float, rhs: Float)
 
