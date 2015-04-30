@@ -1362,8 +1362,6 @@ extension Array : ArrayLiteralConvertible {
     init(arrayLiteral elements: T...)
 }
 
-
-
 extension Array {
 
     /// Construct an empty Array
@@ -2268,8 +2266,6 @@ extension ContiguousArray : ArrayLiteralConvertible {
     init(arrayLiteral elements: T...)
 }
 
-
-
 extension ContiguousArray {
 
     /// Construct an empty ContiguousArray
@@ -2581,7 +2577,7 @@ struct DictionaryGenerator<Key : Hashable, Value> : GeneratorType {
 
 
 /// Used to access the key-value pairs in an instance of
-/// `Dictionary<Key,Value>`.
+/// `Dictionary<Key, Value>`.
 ///
 /// Remember that Dictionary has two subscripting interfaces:
 ///
@@ -2842,8 +2838,8 @@ struct EnumerateGenerator<Base : GeneratorType> : GeneratorType, SequenceType {
     /// sequence, in order.
     typealias Generator = EnumerateGenerator<Base>
 
-    /// `EnumerateGenerator` is also a `SequenceType`, so it `generate`\
-    /// 's a copy of itself
+    /// `EnumerateGenerator` is also a `SequenceType`, so it
+    /// `generate`\ s a copy of itself
     func generate() -> EnumerateGenerator<Base>
 }
 
@@ -3395,8 +3391,8 @@ struct GeneratorOf<T> : GeneratorType, SequenceType {
     /// has returned `nil`.
     mutating func next() -> T?
 
-    /// `GeneratorOf<T>` is also a `SequenceType`, so it `generate`\
-    /// 's a copy of itself
+    /// `GeneratorOf<T>` is also a `SequenceType`, so it `generate`\ s
+    /// a copy of itself
     func generate() -> GeneratorOf<T>
 }
 
@@ -3408,8 +3404,8 @@ struct GeneratorOfOne<T> : GeneratorType, SequenceType {
     /// sequence if `element == nil`.
     init(_ element: T?)
 
-    /// `GeneratorOfOne` is also a `SequenceType`, so it `generate`\
-    /// 's a copy of itself
+    /// `GeneratorOfOne` is also a `SequenceType`, so it `generate`\ s a
+    /// copy of itself
     func generate() -> GeneratorOfOne<T>
 
     /// Advance to the next element and return it, or `nil` if no next
@@ -5355,9 +5351,9 @@ protocol RangeReplaceableCollectionType : ExtensibleCollectionType {
     /// Invalidates all indices with respect to `self`.
     ///
     /// Complexity: O(\ `countElements(subRange)`\ ) if
-    /// `subRange.endIndex == self.endIndex` and `isEmpty(newElements)`\ ,
-    /// O(\ `countElements(self)`\ + \`countElements(newElements)`\ ) otherwise.
-    mutating func replaceRange<C : CollectionType where `Self`.Generator.Element == Self.Generator.Element>(subRange: Range<Self.Index>, with newElements: C)
+    /// `subRange.endIndex == self.endIndex` and `isEmpty(newElements)`,
+    /// O(\ `countElements(self)` + `countElements(newElements)`\ ) otherwise.
+    mutating func replaceRange<C : CollectionType where Self.Generator.Element == Self.Generator.Element>(subRange: Range<Self.Index>, with newElements: C)
 
     /// Insert `newElement` at index `i`.
     ///
@@ -5379,7 +5375,7 @@ protocol RangeReplaceableCollectionType : ExtensibleCollectionType {
     /// Can be implemented as::
     ///
     ///   Swift.splice(&self, newElements, atIndex: i)
-    mutating func splice<S : CollectionType where `Self`.Generator.Element == Self.Generator.Element>(newElements: S, atIndex i: Self.Index)
+    mutating func splice<S : CollectionType where Self.Generator.Element == Self.Generator.Element>(newElements: S, atIndex i: Self.Index)
 
     /// Remove the element at index `i`
     ///
@@ -6445,8 +6441,8 @@ extension String : RangeReplaceableCollectionType {
     /// Invalidates all indices with respect to `self`.
     ///
     /// :param: `keepCapacity`, if `true`, prevents the release of
-    ////   allocated storage, which can be a useful optimization
-    ///    when `self` is going to be grown again.
+    ///   allocated storage, which can be a useful optimization
+    ///   when `self` is going to be grown again.
     mutating func removeAll(keepCapacity: Bool = default)
 }
 
@@ -6524,6 +6520,12 @@ extension String {
     /// expression "[-+]?[0-9]+" only.
     func toInt() -> Int?
 }
+
+
+
+
+
+
 
 
 
@@ -7710,8 +7712,8 @@ struct UTF8 : UnicodeCodecType {
     /// :param: `next`: a *generator* of code units to be decoded.
     mutating func decode<G : GeneratorType where CodeUnit == CodeUnit>(inout next: G) -> UnicodeDecodingResult
 
-    /// Encode a `UnicodeScalar` as a series of `CodeUnit`\ s by `put`\
-    /// 'ing each `CodeUnit` to `output`.
+    /// Encode a `UnicodeScalar` as a series of `CodeUnit`\ s by
+    /// `put`'ing each `CodeUnit` to `output`.
     static func encode<S : SinkType where CodeUnit == CodeUnit>(input: UnicodeScalar, inout output: S)
 }
 
@@ -7744,10 +7746,10 @@ protocol UnicodeCodecType {
     /// in the generator for a given returned `UnicodeScalar` or an error.
     ///
     /// :param: `next`: a *generator* of code units to be decoded.
-    mutating func decode<G : GeneratorType where `Self`.CodeUnit == CodeUnit>(inout next: G) -> UnicodeDecodingResult
+    mutating func decode<G : GeneratorType where Self.CodeUnit == CodeUnit>(inout next: G) -> UnicodeDecodingResult
 
-    /// Encode a `UnicodeScalar` as a series of `CodeUnit`\ s by `put`\
-    /// 'ing each `CodeUnit` to `output`.
+    /// Encode a `UnicodeScalar` as a series of `CodeUnit`\ s by
+    /// `put`'ing each `CodeUnit` to `output`.
     class func encode<S : SinkType where `Self`.CodeUnit == CodeUnit>(input: UnicodeScalar, inout output: S)
 }
 
@@ -8127,18 +8129,6 @@ struct UnsafeMutablePointer<T> : RandomAccessIndexType, Hashable, NilLiteralConv
     /// be initialized before being used again.
     func move() -> T
 
-    /// Move count values beginning at source into uninitialized memory,
-    /// transforming the source values into raw memory, proceeding from
-    /// the last value to the first.  Use this for copying ranges into
-    /// later memory that may overlap with the source range.
-    ///
-    /// Requires: either `source` precedes `self` or follows `self + count`.
-    func moveInitializeBackwardFrom(source: UnsafeMutablePointer<T>, count: Int)
-
-    /// Assign from count values beginning at source into initialized
-    /// memory, transforming the source values into raw memory.
-    func moveAssignFrom(source: UnsafeMutablePointer<T>, count: Int)
-
     /// Assign from `count` values beginning at source into initialized
     /// memory, proceeding from the first element to the last.
     func assignFrom(source: UnsafeMutablePointer<T>, count: Int)
@@ -8155,6 +8145,14 @@ struct UnsafeMutablePointer<T> : RandomAccessIndexType, Hashable, NilLiteralConv
     /// transforming the source values into raw memory.
     func moveInitializeFrom(source: UnsafeMutablePointer<T>, count: Int)
 
+    /// Move `count` values beginning at `source` into uninitialized memory,
+    /// transforming the source values into raw memory, proceeding from
+    /// the last value to the first.  Use this for copying ranges into
+    /// later memory that may overlap with the source range.
+    ///
+    /// Requires: either `source` precedes `self` or follows `self + count`.
+    func moveInitializeBackwardFrom(source: UnsafeMutablePointer<T>, count: Int)
+
     /// Copy count values beginning at source into raw memory.
     ///
     /// Precondition: the memory is not initialized.
@@ -8164,6 +8162,10 @@ struct UnsafeMutablePointer<T> : RandomAccessIndexType, Hashable, NilLiteralConv
     ///
     /// Precondition: the memory is not initialized.
     func initializeFrom<C : CollectionType where T == T>(source: C)
+
+    /// Assign from `count` values beginning at `source` into initialized
+    /// memory, transforming the source values into raw memory.
+    func moveAssignFrom(source: UnsafeMutablePointer<T>, count: Int)
 
     /// Destroy the object the pointer points to.
     ///
@@ -8399,54 +8401,53 @@ struct ZipGenerator2<E0 : GeneratorType, E1 : GeneratorType> : GeneratorType {
     mutating func next() -> Element?
 }
 
-func ^<T : _RawOptionSetType>(a: T, b: T) -> T
-
-func ^(lhs: Bool, rhs: Bool) -> Bool
+func ^(lhs: Int8, rhs: Int8) -> Int8
 
 func ^(lhs: UInt8, rhs: UInt8) -> UInt8
 
-func ^(lhs: Int8, rhs: Int8) -> Int8
-
-func ^(lhs: UInt16, rhs: UInt16) -> UInt16
-
 func ^(lhs: Int16, rhs: Int16) -> Int16
-
-func ^(lhs: Int, rhs: Int) -> Int
-
-func ^(lhs: UInt, rhs: UInt) -> UInt
-
-func ^(lhs: Int64, rhs: Int64) -> Int64
-
-func ^(lhs: UInt64, rhs: UInt64) -> UInt64
-
-func ^(lhs: Int32, rhs: Int32) -> Int32
 
 func ^(lhs: UInt32, rhs: UInt32) -> UInt32
 
-func ^=(inout lhs: Int, rhs: Int)
+func ^<T : _RawOptionSetType>(a: T, b: T) -> T
+
+func ^(lhs: Int32, rhs: Int32) -> Int32
+
+func ^(lhs: UInt64, rhs: UInt64) -> UInt64
+
+func ^(lhs: UInt16, rhs: UInt16) -> UInt16
+
+func ^(lhs: UInt, rhs: UInt) -> UInt
+
+func ^(lhs: Int, rhs: Int) -> Int
+
+func ^(lhs: Int64, rhs: Int64) -> Int64
+
+func ^(lhs: Bool, rhs: Bool) -> Bool
 
 func ^=(inout lhs: Int32, rhs: Int32)
 
+func ^=(inout lhs: UInt16, rhs: UInt16)
+
+func ^=<T : BitwiseOperationsType>(inout lhs: T, rhs: T)
+
+func ^=(inout lhs: Int, rhs: Int)
+
+func ^=(inout lhs: UInt, rhs: UInt)
+
+func ^=(inout lhs: Int64, rhs: Int64)
+
+func ^=(inout lhs: UInt64, rhs: UInt64)
+
 func ^=(inout lhs: UInt32, rhs: UInt32)
 
-func ^=(inout lhs: UInt16, rhs: UInt16)
+func ^=(inout lhs: Int16, rhs: Int16)
 
 func ^=(inout lhs: Int8, rhs: Int8)
 
 func ^=(inout lhs: UInt8, rhs: UInt8)
 
-func ^=(inout lhs: Int16, rhs: Int16)
-
 func ^=(inout lhs: Bool, rhs: Bool)
-
-func ^=(inout lhs: UInt64, rhs: UInt64)
-
-func ^=<T : BitwiseOperationsType>(inout lhs: T, rhs: T)
-
-func ^=(inout lhs: Int64, rhs: Int64)
-
-func ^=(inout lhs: UInt, rhs: UInt)
-
 
 /// The underlying buffer for an ArrayType conforms to _ArrayBufferType
 protocol _ArrayBufferType : MutableCollectionType {
@@ -9024,13 +9025,13 @@ func assert(condition: @autoclosure () -> Bool, _ message: @autoclosure () -> St
 /// optimized builds this is a noop.
 @noreturn func assertionFailure(_ message: @autoclosure () -> String = default, file: StaticString = default, line: UWord = default)
 
+/// Return `true` iff an element in `seq` satisfies `predicate`.
+func contains<S : SequenceType, L : BooleanType>(seq: S, predicate: (S.Generator.Element) -> L) -> Bool
+
 
 /// Return `true` iff `x` is in `seq`.
 func contains<S : SequenceType where S.Generator.Element : Equatable>(seq: S, x: S.Generator.Element) -> Bool
 
-
-/// Return `true` iff an element in `seq` satisfies `predicate`.
-func contains<S : SequenceType, L : BooleanType>(seq: S, predicate: (S.Generator.Element) -> L) -> Bool
 
 
 /// Equivalent to countElements(r)
@@ -9067,18 +9068,6 @@ func debugPrint<T, TargetStream : OutputStreamType>(x: T, inout target: TargetSt
 func debugPrint<T>(x: T)
 
 
-/// Write to `target` the textual representation of `x` most suitable
-/// for debugging, followed by a newline.
-///
-/// * If `T` conforms to `DebugPrintable`, write `x.debugDescription`
-/// * Otherwise, if `T` conforms to `Printable`, write `x.description`
-/// * Otherwise, if `T` conforms to `Stramable`, write `x`
-/// * Otherwise, fall back to a default textual representation.
-///
-/// See also: `debugPrint(x, &target)`
-func debugPrintln<T, TargetStream : OutputStreamType>(x: T, inout target: TargetStream)
-
-
 /// Write to the console the textual representation of `x` most suitable
 /// for debugging, followed by a newline.
 ///
@@ -9089,6 +9078,18 @@ func debugPrintln<T, TargetStream : OutputStreamType>(x: T, inout target: Target
 ///
 /// See also: `debugPrint(x)`
 func debugPrintln<T>(x: T)
+
+
+/// Write to `target` the textual representation of `x` most suitable
+/// for debugging, followed by a newline.
+///
+/// * If `T` conforms to `DebugPrintable`, write `x.debugDescription`
+/// * Otherwise, if `T` conforms to `Printable`, write `x.description`
+/// * Otherwise, if `T` conforms to `Stramable`, write `x`
+/// * Otherwise, fall back to a default textual representation.
+///
+/// See also: `debugPrint(x, &target)`
+func debugPrintln<T, TargetStream : OutputStreamType>(x: T, inout target: TargetStream)
 
 
 /// Measure the distance between `start` and `end`.
@@ -9114,12 +9115,12 @@ func dropFirst<Seq : Sliceable>(s: Seq) -> Seq.SubSlice
 func dropLast<S : Sliceable where S.Index : BidirectionalIndexType>(s: S) -> S.SubSlice
 
 
-/// Dump an object's contents using its mirror to standard output.
-func dump<T>(x: T, name: String? = default, indent: Int = default, maxDepth: Int = default, maxItems: Int = default) -> T
-
-
 /// Dump an object's contents using its mirror to the specified output stream.
 func dump<T, TargetStream : OutputStreamType>(x: T, inout targetStream: TargetStream, name: String? = default, indent: Int = default, maxDepth: Int = default, maxItems: Int = default) -> T
+
+
+/// Dump an object's contents using its mirror to standard output.
+func dump<T>(x: T, name: String? = default, indent: Int = default, maxDepth: Int = default, maxItems: Int = default) -> T
 
 
 /// Return a lazy `SequenceType` containing pairs (*n*, *x*), where
@@ -9219,19 +9220,19 @@ func last<C : CollectionType where C.Index : BidirectionalIndexType>(x: C) -> C.
 
 
 /// Augment `s` with lazy methods such as `map`, `filter`, etc.
-func lazy<S : CollectionType where S.Index : ForwardIndexType>(s: S) -> LazyForwardCollection<S>
-
-
-/// Augment `s` with lazy methods such as `map`, `filter`, etc.
-func lazy<S : CollectionType where S.Index : BidirectionalIndexType>(s: S) -> LazyBidirectionalCollection<S>
-
-
-/// Augment `s` with lazy methods such as `map`, `filter`, etc.
 func lazy<S : CollectionType where S.Index : RandomAccessIndexType>(s: S) -> LazyRandomAccessCollection<S>
 
 
 /// Augment `s` with lazy methods such as `map`, `filter`, etc.
 func lazy<S : SequenceType>(s: S) -> LazySequence<S>
+
+
+/// Augment `s` with lazy methods such as `map`, `filter`, etc.
+func lazy<S : CollectionType where S.Index : ForwardIndexType>(s: S) -> LazyForwardCollection<S>
+
+
+/// Augment `s` with lazy methods such as `map`, `filter`, etc.
+func lazy<S : CollectionType where S.Index : BidirectionalIndexType>(s: S) -> LazyBidirectionalCollection<S>
 
 
 /// Return true iff `a1` precedes `a2` in a lexicographical ("dictionary")
@@ -9244,10 +9245,6 @@ func lexicographicalCompare<S1 : SequenceType, S2 : SequenceType where S1.Genera
 func lexicographicalCompare<S1 : SequenceType, S2 : SequenceType where S1.Generator.Element == S1.Generator.Element, S1.Generator.Element : Comparable>(a1: S1, a2: S2) -> Bool
 
 
-/// Haskell's fmap for Optionals.
-func map<T, U>(x: T?, f: (T) -> U) -> U?
-
-
 /// Return an `Array` containing the results of mapping `transform`
 /// over `source`.
 func map<C : CollectionType, T>(source: C, transform: (C.Generator.Element) -> T) -> [T]
@@ -9258,12 +9255,16 @@ func map<C : CollectionType, T>(source: C, transform: (C.Generator.Element) -> T
 func map<S : SequenceType, T>(source: S, transform: (S.Generator.Element) -> T) -> [T]
 
 
-/// Return the greatest argument passed
-func max<T : Comparable>(x: T, y: T, z: T, rest: T...) -> T
+/// Haskell's fmap for Optionals.
+func map<T, U>(x: T?, f: (T) -> U) -> U?
 
 
 /// Return the greater of `x` and `y`
 func max<T : Comparable>(x: T, y: T) -> T
+
+
+/// Return the greatest argument passed
+func max<T : Comparable>(x: T, y: T, z: T, rest: T...) -> T
 
 
 /// Returns the maximum element in `elements`.  Requires:
@@ -9271,12 +9272,12 @@ func max<T : Comparable>(x: T, y: T) -> T
 func maxElement<R : SequenceType where R.Generator.Element : Comparable>(elements: R) -> R.Generator.Element
 
 
-/// Return the lesser of `x` and `y`
-func min<T : Comparable>(x: T, y: T) -> T
-
-
 /// Return the least argument passed
 func min<T : Comparable>(x: T, y: T, z: T, rest: T...) -> T
+
+
+/// Return the lesser of `x` and `y`
+func min<T : Comparable>(x: T, y: T) -> T
 
 
 /// Returns the minimum element in `elements`.  Requires:
@@ -9533,6 +9534,17 @@ func sort<C : MutableCollectionType where C.Index : RandomAccessIndexType>(inout
 /// Return an `Array` containing the sorted elements of `source`{according}.
 ///
 /// The sorting algorithm is not stable (can change the relative order of
+/// elements for which `isOrderedBefore` does not establish an order).
+///
+/// Requires: `isOrderedBefore` is a `strict weak ordering
+/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
+/// over `elements`.
+func sorted<C : SequenceType>(source: C, isOrderedBefore: (C.Generator.Element, C.Generator.Element) -> Bool) -> [C.Generator.Element]
+
+
+/// Return an `Array` containing the sorted elements of `source`{according}.
+///
+/// The sorting algorithm is not stable (can change the relative order of
 /// elements that compare equal).
 ///
 /// Requires: The less-than operator (`func <`) defined in the `Comparable`
@@ -9540,17 +9552,6 @@ func sort<C : MutableCollectionType where C.Index : RandomAccessIndexType>(inout
 /// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
 /// over `elements`.
 func sorted<C : SequenceType where C.Generator.Element : Comparable>(source: C) -> [C.Generator.Element]
-
-
-/// Return an `Array` containing the sorted elements of `source`{according}.
-///
-/// The sorting algorithm is not stable (can change the relative order of
-/// elements for which `isOrderedBefore` does not establish an order).
-///
-/// Requires: `isOrderedBefore` is a `strict weak ordering
-/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
-/// over `elements`.
-func sorted<C : SequenceType>(source: C, isOrderedBefore: (C.Generator.Element, C.Generator.Element) -> Bool) -> [C.Generator.Element]
 
 
 /// Insert `newElements` into `x` at index `i`
@@ -9573,15 +9574,15 @@ func splice<C : RangeReplaceableCollectionType, S : CollectionType where S.Gener
 func split<S : Sliceable, R : BooleanType>(elements: S, isSeparator: (S.Generator.Element) -> R, maxSplit: Int = default, allowEmptySlices: Bool = default) -> [S.SubSlice]
 
 
+/// Return true iff the the initial elements of `s` are equal to `prefix`.
+func startsWith<S0 : SequenceType, S1 : SequenceType where S0.Generator.Element == S0.Generator.Element, S0.Generator.Element : Equatable>(s: S0, prefix: S1) -> Bool
+
+
 /// Return true iff `s` begins with elements equivalent to those of
 /// `prefix`, using `isEquivalent` as the equivalence test.  Requires:
 /// `isEquivalent` is an `equivalence relation
 /// <http://en.wikipedia.org/wiki/Equivalence_relation>`_
 func startsWith<S0 : SequenceType, S1 : SequenceType where S0.Generator.Element == S0.Generator.Element>(s: S0, prefix: S1, isEquivalent: (S0.Generator.Element, S0.Generator.Element) -> Bool) -> Bool
-
-
-/// Return true iff the the initial elements of `s` are equal to `prefix`.
-func startsWith<S0 : SequenceType, S1 : SequenceType where S0.Generator.Element == S0.Generator.Element, S0.Generator.Element : Equatable>(s: S0, prefix: S1) -> Bool
 
 
 /// Return the sequence of values (`start`, `start + stride`, `start +
@@ -9723,53 +9724,53 @@ func withVaList<R>(builder: VaListBuilder, f: (CVaListPointer) -> R) -> R
 /// Invoke `f` with a C `va_list` argument derived from `args`.
 func withVaList<R>(args: [CVarArgType], f: (CVaListPointer) -> R) -> R
 
-func |(lhs: UInt64, rhs: UInt64) -> UInt64
+func |(lhs: Int8, rhs: Int8) -> Int8
+
+func |(lhs: UInt8, rhs: UInt8) -> UInt8
+
+func |<T : _RawOptionSetType>(a: T, b: T) -> T
+
+func |(lhs: Int, rhs: Int) -> Int
+
+func |(lhs: UInt, rhs: UInt) -> UInt
 
 func |(lhs: Int64, rhs: Int64) -> Int64
 
-func |(lhs: Int32, rhs: Int32) -> Int32
-
 func |(lhs: UInt32, rhs: UInt32) -> UInt32
+
+func |(lhs: UInt64, rhs: UInt64) -> UInt64
+
+func |(lhs: Int32, rhs: Int32) -> Int32
 
 func |(lhs: Int16, rhs: Int16) -> Int16
 
 func |(lhs: UInt16, rhs: UInt16) -> UInt16
 
-func |(lhs: UInt8, rhs: UInt8) -> UInt8
-
-func |(lhs: Int8, rhs: Int8) -> Int8
-
-func |(lhs: UInt, rhs: UInt) -> UInt
-
-func |(lhs: Int, rhs: Int) -> Int
-
 func |(lhs: Bool, rhs: Bool) -> Bool
 
-func |<T : _RawOptionSetType>(a: T, b: T) -> T
+func |=(inout lhs: Int32, rhs: Int32)
+
+func |=(inout lhs: UInt32, rhs: UInt32)
+
+func |=(inout lhs: Int16, rhs: Int16)
+
+func |=(inout lhs: UInt16, rhs: UInt16)
+
+func |=(inout lhs: Int8, rhs: Int8)
+
+func |=(inout lhs: UInt8, rhs: UInt8)
+
+func |=(inout lhs: Int64, rhs: Int64)
+
+func |=(inout lhs: UInt, rhs: UInt)
+
+func |=(inout lhs: Int, rhs: Int)
+
+func |=<T : BitwiseOperationsType>(inout lhs: T, rhs: T)
 
 func |=(inout lhs: UInt64, rhs: UInt64)
 
 func |=(inout lhs: Bool, rhs: Bool)
-
-func |=(inout lhs: UInt8, rhs: UInt8)
-
-func |=(inout lhs: Int8, rhs: Int8)
-
-func |=(inout lhs: UInt16, rhs: UInt16)
-
-func |=(inout lhs: Int16, rhs: Int16)
-
-func |=(inout lhs: UInt32, rhs: UInt32)
-
-func |=(inout lhs: Int32, rhs: Int32)
-
-func |=<T : BitwiseOperationsType>(inout lhs: T, rhs: T)
-
-func |=(inout lhs: Int, rhs: Int)
-
-func |=(inout lhs: UInt, rhs: UInt)
-
-func |=(inout lhs: Int64, rhs: Int64)
 
 
 /// If `lhs` is `true`, return it.  Otherwise, evaluate `rhs` and
@@ -9778,35 +9779,35 @@ func |=(inout lhs: Int64, rhs: Int64)
 
 func ||<T : BooleanType>(lhs: T, rhs: @autoclosure () -> Bool) -> Bool
 
-prefix func ~<T : _RawOptionSetType>(a: T) -> T
-
-prefix func ~(rhs: UInt8) -> UInt8
-
-prefix func ~(rhs: Int8) -> Int8
-
 prefix func ~(rhs: Int) -> Int
-
-prefix func ~(rhs: UInt16) -> UInt16
 
 prefix func ~(rhs: UInt) -> UInt
 
 prefix func ~(rhs: Int64) -> Int64
 
-prefix func ~(a: Bool) -> Bool
-
-prefix func ~(rhs: UInt32) -> UInt32
+prefix func ~(rhs: UInt64) -> UInt64
 
 prefix func ~(rhs: Int32) -> Int32
 
-prefix func ~(rhs: UInt64) -> UInt64
+prefix func ~(rhs: UInt32) -> UInt32
 
 prefix func ~(rhs: Int16) -> Int16
 
-func ~=<T : Equatable>(a: T, b: T) -> Bool
+prefix func ~(rhs: UInt16) -> UInt16
 
-func ~=<T>(lhs: _OptionalNilComparisonType, rhs: T?) -> Bool
+prefix func ~(rhs: Int8) -> Int8
+
+prefix func ~(rhs: UInt8) -> UInt8
+
+prefix func ~<T : _RawOptionSetType>(a: T) -> T
+
+prefix func ~(a: Bool) -> Bool
 
 
 /// Returns `true` iff `pattern` contains `value`
 func ~=<I : IntervalType>(pattern: I, value: I.Bound) -> Bool
+
+func ~=<T>(lhs: _OptionalNilComparisonType, rhs: T?) -> Bool
+
+func ~=<T : Equatable>(a: T, b: T) -> Bool
 
