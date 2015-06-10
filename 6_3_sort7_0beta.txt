@@ -9099,49 +9099,49 @@ struct ZipGenerator2<E0 : GeneratorType, E1 : GeneratorType> : GeneratorType {
     mutating func next() -> Element?
 }
 
-func ^(lhs: Int64, rhs: Int64) -> Int64
+func ^(lhs: Int32, rhs: Int32) -> Int32
 
-func ^(lhs: Int, rhs: Int) -> Int
+func ^(lhs: UInt16, rhs: UInt16) -> UInt16
+
+func ^(lhs: Int64, rhs: Int64) -> Int64
 
 func ^(lhs: UInt64, rhs: UInt64) -> UInt64
 
-func ^(lhs: Int32, rhs: Int32) -> Int32
-
 func ^(lhs: UInt, rhs: UInt) -> UInt
 
-func ^(lhs: UInt32, rhs: UInt32) -> UInt32
+func ^(lhs: Int, rhs: Int) -> Int
+
+func ^<T : _RawOptionSetType>(a: T, b: T) -> T
 
 func ^(lhs: Int16, rhs: Int16) -> Int16
-
-func ^(lhs: UInt16, rhs: UInt16) -> UInt16
 
 func ^(lhs: Int8, rhs: Int8) -> Int8
 
 func ^(lhs: UInt8, rhs: UInt8) -> UInt8
 
-func ^<T : _RawOptionSetType>(a: T, b: T) -> T
-
-func ^=(inout lhs: UInt8, rhs: UInt8)
-
-func ^=<T : BitwiseOperationsType>(inout lhs: T, rhs: T)
+func ^(lhs: UInt32, rhs: UInt32) -> UInt32
 
 func ^=(inout lhs: Int, rhs: Int)
 
-func ^=(inout lhs: UInt, rhs: UInt)
-
-func ^=(inout lhs: Int64, rhs: Int64)
-
-func ^=(inout lhs: UInt64, rhs: UInt64)
-
 func ^=(inout lhs: Int32, rhs: Int32)
 
+func ^=<T : BitwiseOperationsType>(inout lhs: T, rhs: T)
+
 func ^=(inout lhs: UInt32, rhs: UInt32)
+
+func ^=(inout lhs: UInt64, rhs: UInt64)
 
 func ^=(inout lhs: Int16, rhs: Int16)
 
 func ^=(inout lhs: UInt16, rhs: UInt16)
 
 func ^=(inout lhs: Int8, rhs: Int8)
+
+func ^=(inout lhs: UInt8, rhs: UInt8)
+
+func ^=(inout lhs: Int64, rhs: Int64)
+
+func ^=(inout lhs: UInt, rhs: UInt)
 
 
 /// The underlying buffer for an ArrayType conforms to
@@ -9902,18 +9902,16 @@ func assert(condition: @autoclosure () -> Bool, _ message: @autoclosure () -> St
 @inline(__always) func assertionFailure(_ message: @autoclosure () -> String = default, file: StaticString = default, line: UWord = default)
 
 
-/// Return `true` iff `x` is in `seq`.
-func contains<S : SequenceType where S.Generator.Element : Equatable>(seq: S, x: S.Generator.Element) -> Bool
-
-
-/// Return `true` iff an element in `seq` satisfies `predicate`.
-func contains<S : SequenceType, L : BooleanType>(seq: S, predicate: @noescape (S.Generator.Element) -> L) -> Bool
-
-
-/// Return the number of elements in x.
+/// Write to `target` the textual representation of `x` most suitable
+/// for debugging.
 ///
-/// O(1) if T.Index is RandomAccessIndexType; O(N) otherwise.
-func count<T : _CollectionType>(x: T) -> T.Index.Distance
+/// * If `T` conforms to `DebugPrintable`, write `x.debugDescription`
+/// * Otherwise, if `T` conforms to `Printable`, write `x.description`
+/// * Otherwise, if `T` conforms to `Streamable`, write `x`
+/// * Otherwise, fall back to a default textual representation.
+///
+/// See also: `debugPrintln(x, &target)`
+@inline(never) func debugPrint<T, TargetStream : OutputStreamType>(value: T, inout target: TargetStream)
 
 
 /// Write to the console the textual representation of `x` most suitable
@@ -9926,18 +9924,6 @@ func count<T : _CollectionType>(x: T) -> T.Index.Distance
 ///
 /// See also: `debugPrintln(x)`
 @inline(never) func debugPrint<T>(x: T)
-
-
-/// Write to `target` the textual representation of `x` most suitable
-/// for debugging.
-///
-/// * If `T` conforms to `DebugPrintable`, write `x.debugDescription`
-/// * Otherwise, if `T` conforms to `Printable`, write `x.description`
-/// * Otherwise, if `T` conforms to `Streamable`, write `x`
-/// * Otherwise, fall back to a default textual representation.
-///
-/// See also: `debugPrintln(x, &target)`
-@inline(never) func debugPrint<T, TargetStream : OutputStreamType>(value: T, inout target: TargetStream)
 
 
 /// Write to the console the textual representation of `x` most suitable
@@ -9962,6 +9948,20 @@ func count<T : _CollectionType>(x: T) -> T.Index.Distance
 ///
 /// See also: `debugPrint(x, &target)`
 @inline(never) func debugPrintln<T, TargetStream : OutputStreamType>(x: T, inout target: TargetStream)
+
+
+/// Return `true` iff `x` is in `seq`.
+func contains<S : SequenceType where S.Generator.Element : Equatable>(seq: S, x: S.Generator.Element) -> Bool
+
+
+/// Return `true` iff an element in `seq` satisfies `predicate`.
+func contains<S : SequenceType, L : BooleanType>(seq: S, predicate: @noescape (S.Generator.Element) -> L) -> Bool
+
+
+/// Return the number of elements in x.
+///
+/// O(1) if T.Index is RandomAccessIndexType; O(N) otherwise.
+func count<T : _CollectionType>(x: T) -> T.Index.Distance
 
 
 /// Measure the distance between `start` and `end`.
@@ -10581,17 +10581,31 @@ func startsWith<S0 : SequenceType, S1 : SequenceType where S0.Generator.Element 
 
 /// Return the sequence of values (`start`, `start + stride`, `start +
 /// stride + stride`, ... *last*) where *last* is the last value in
-/// the progression that is less than `end`.
-func stride<T : Strideable>(from start: T, to end: T, by stride: T.Stride) -> StrideTo<T>
-
-
-/// Return the sequence of values (`start`, `start + stride`, `start +
-/// stride + stride`, ... *last*) where *last* is the last value in
 /// the progression less than or equal to `end`.
 ///
 /// .. Note:: There is no guarantee that `end` is an element of the
 ///      sequence.
 func stride<T : Strideable>(from start: T, through end: T, by stride: T.Stride) -> StrideThrough<T>
+
+
+/// Return the sequence of values (`start`, `start + stride`, `start +
+/// stride + stride`, ... *last*) where *last* is the last value in
+/// the progression that is less than `end`.
+func stride<T : Strideable>(from start: T, to end: T, by stride: T.Stride) -> StrideTo<T>
+
+
+/// Returns the result of `debugPrint`\ 'ing `x` into a `String`
+func toDebugString<T>(x: T) -> String
+
+
+/// Returns the result of `print`\ 'ing `x` into a `String`
+@inline(never) func toString<T>(x: T) -> String
+
+
+/// Return an underestimate of the number of elements in the given
+/// sequence, without consuming the sequence.  For Sequences that are
+/// actually Collections, this will return count(x)
+func underestimateCount<T : SequenceType>(x: T) -> Int
 
 
 /// Returns the least possible interval between distinct instances of
@@ -10620,14 +10634,6 @@ func suffix<S : Sliceable where S.Index : BidirectionalIndexType>(s: S, maxLengt
 func swap<T>(inout a: T, inout b: T)
 
 
-/// Returns the result of `debugPrint`\ 'ing `x` into a `String`
-func toDebugString<T>(x: T) -> String
-
-
-/// Returns the result of `print`\ 'ing `x` into a `String`
-@inline(never) func toString<T>(x: T) -> String
-
-
 /// Translate `input`, in the given `InputEncoding`, into `output`, in
 /// the given `OutputEncoding`.
 ///
@@ -10635,12 +10641,6 @@ func toDebugString<T>(x: T) -> String
 ///   error is detected in `input`, if `true`.  Otherwise, U+FFFD
 ///   replacement characters are inserted for each detected error.
 func transcode<Input : GeneratorType, Output : SinkType, InputEncoding : UnicodeCodecType, OutputEncoding : UnicodeCodecType where Input.Element == Input.Element, Output.Element == Output.Element>(inputEncoding: InputEncoding.Type, outputEncoding: OutputEncoding.Type, input: Input, inout output: Output, #stopOnError: Bool) -> Bool
-
-
-/// Return an underestimate of the number of elements in the given
-/// sequence, without consuming the sequence.  For Sequences that are
-/// actually Collections, this will return count(x)
-func underestimateCount<T : SequenceType>(x: T) -> Int
 
 
 /// Return an UnsafePointer to the storage used for `object`.  There's
@@ -10684,14 +10684,14 @@ func unsafeDowncast<T>(x: AnyObject) -> T
 @inline(__always) func unsafeUnwrap<T>(nonEmpty: T?) -> T
 
 
-/// Evaluate `f(x)` and return its result, ensuring that `x` is not
-/// destroyed before f returns.
-func withExtendedLifetime<T, Result>(x: T, f: @noescape T -> Result) -> Result
-
-
 /// Evaluate `f()` and return its result, ensuring that `x` is not
 /// destroyed before f returns.
 func withExtendedLifetime<T, Result>(x: T, f: @noescape () -> Result) -> Result
+
+
+/// Evaluate `f(x)` and return its result, ensuring that `x` is not
+/// destroyed before f returns.
+func withExtendedLifetime<T, Result>(x: T, f: @noescape T -> Result) -> Result
 
 
 /// Invokes `body` with an `UnsafeMutablePointer` to `arg` and returns the
@@ -10737,49 +10737,49 @@ func withVaList<R>(builder: VaListBuilder, f: @noescape CVaListPointer -> R) -> 
 /// underlying sequence.
 func zip<S0 : SequenceType, S1 : SequenceType>(s0: S0, s1: S1) -> Zip2<S0, S1>
 
-func |(lhs: Int, rhs: Int) -> Int
-
-func |(lhs: UInt, rhs: UInt) -> UInt
-
-func |(lhs: Int64, rhs: Int64) -> Int64
+func |(lhs: Int32, rhs: Int32) -> Int32
 
 func |(lhs: UInt64, rhs: UInt64) -> UInt64
 
-func |<T : _RawOptionSetType>(a: T, b: T) -> T
+func |(lhs: UInt32, rhs: UInt32) -> UInt32
 
-func |(lhs: UInt8, rhs: UInt8) -> UInt8
-
-func |(lhs: Int8, rhs: Int8) -> Int8
-
-func |(lhs: UInt16, rhs: UInt16) -> UInt16
+func |(lhs: Int64, rhs: Int64) -> Int64
 
 func |(lhs: Int16, rhs: Int16) -> Int16
 
-func |(lhs: UInt32, rhs: UInt32) -> UInt32
+func |(lhs: UInt16, rhs: UInt16) -> UInt16
 
-func |(lhs: Int32, rhs: Int32) -> Int32
+func |(lhs: UInt, rhs: UInt) -> UInt
 
-func |=(inout lhs: UInt64, rhs: UInt64)
+func |(lhs: Int8, rhs: Int8) -> Int8
 
-func |=(inout lhs: Int32, rhs: Int32)
+func |(lhs: Int, rhs: Int) -> Int
 
-func |=(inout lhs: Int8, rhs: Int8)
+func |(lhs: UInt8, rhs: UInt8) -> UInt8
 
-func |=(inout lhs: UInt16, rhs: UInt16)
+func |<T : _RawOptionSetType>(a: T, b: T) -> T
 
-func |=(inout lhs: Int16, rhs: Int16)
-
-func |=(inout lhs: UInt8, rhs: UInt8)
-
-func |=<T : BitwiseOperationsType>(inout lhs: T, rhs: T)
-
-func |=(inout lhs: Int, rhs: Int)
+func |=(inout lhs: Int64, rhs: Int64)
 
 func |=(inout lhs: UInt32, rhs: UInt32)
 
 func |=(inout lhs: UInt, rhs: UInt)
 
-func |=(inout lhs: Int64, rhs: Int64)
+func |=(inout lhs: Int16, rhs: Int16)
+
+func |=(inout lhs: UInt16, rhs: UInt16)
+
+func |=(inout lhs: UInt64, rhs: UInt64)
+
+func |=(inout lhs: Int32, rhs: Int32)
+
+func |=(inout lhs: Int, rhs: Int)
+
+func |=(inout lhs: Int8, rhs: Int8)
+
+func |=(inout lhs: UInt8, rhs: UInt8)
+
+func |=<T : BitwiseOperationsType>(inout lhs: T, rhs: T)
 
 
 /// If `lhs` is `true`, return it.  Otherwise, evaluate `rhs` and
@@ -10788,35 +10788,35 @@ func |=(inout lhs: Int64, rhs: Int64)
 
 func ||<T : BooleanType>(lhs: T, rhs: @autoclosure () -> Bool) -> Bool
 
+prefix func ~(rhs: Int64) -> Int64
+
 prefix func ~(rhs: Int32) -> Int32
 
+prefix func ~(rhs: UInt64) -> UInt64
+
+prefix func ~(rhs: UInt) -> UInt
+
+prefix func ~<T : _RawOptionSetType>(a: T) -> T
+
+prefix func ~(rhs: Int8) -> Int8
+
 prefix func ~(rhs: UInt32) -> UInt32
+
+prefix func ~(rhs: Int) -> Int
+
+prefix func ~(rhs: UInt8) -> UInt8
 
 prefix func ~(rhs: Int16) -> Int16
 
 prefix func ~(rhs: UInt16) -> UInt16
 
-prefix func ~(rhs: UInt64) -> UInt64
-
-prefix func ~(rhs: UInt8) -> UInt8
-
-prefix func ~<T : _RawOptionSetType>(a: T) -> T
-
-prefix func ~(rhs: Int64) -> Int64
-
-prefix func ~(rhs: UInt) -> UInt
-
-prefix func ~(rhs: Int) -> Int
-
-prefix func ~(rhs: Int8) -> Int8
-
 func ~=<T>(lhs: _OptionalNilComparisonType, rhs: T?) -> Bool
-
-func ~=<I : ForwardIndexType where I : Comparable>(pattern: Range<I>, value: I) -> Bool
 
 func ~=<T : Equatable>(a: T, b: T) -> Bool
 
 
 /// Returns `true` iff `pattern` contains `value`
 func ~=<I : IntervalType>(pattern: I, value: I.Bound) -> Bool
+
+func ~=<I : ForwardIndexType where I : Comparable>(pattern: Range<I>, value: I) -> Bool
 
