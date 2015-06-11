@@ -9914,6 +9914,18 @@ func assert(condition: @autoclosure () -> Bool, _ message: @autoclosure () -> St
 @inline(never) func debugPrint<T, TargetStream : OutputStreamType>(value: T, inout target: TargetStream)
 
 
+/// Write to `target` the textual representation of `x` most suitable
+/// for debugging, followed by a newline.
+///
+/// * If `T` conforms to `DebugPrintable`, write `x.debugDescription`
+/// * Otherwise, if `T` conforms to `Printable`, write `x.description`
+/// * Otherwise, if `T` conforms to `Streamable`, write `x`
+/// * Otherwise, fall back to a default textual representation.
+///
+/// See also: `debugPrint(x, &target)`
+@inline(never) func debugPrintln<T, TargetStream : OutputStreamType>(x: T, inout target: TargetStream)
+
+
 /// Write to the console the textual representation of `x` most suitable
 /// for debugging.
 ///
@@ -9936,18 +9948,6 @@ func assert(condition: @autoclosure () -> Bool, _ message: @autoclosure () -> St
 ///
 /// See also: `debugPrint(x)`
 @inline(never) func debugPrintln<T>(x: T)
-
-
-/// Write to `target` the textual representation of `x` most suitable
-/// for debugging, followed by a newline.
-///
-/// * If `T` conforms to `DebugPrintable`, write `x.debugDescription`
-/// * Otherwise, if `T` conforms to `Printable`, write `x.description`
-/// * Otherwise, if `T` conforms to `Streamable`, write `x`
-/// * Otherwise, fall back to a default textual representation.
-///
-/// See also: `debugPrint(x, &target)`
-@inline(never) func debugPrintln<T, TargetStream : OutputStreamType>(x: T, inout target: TargetStream)
 
 
 /// Return `true` iff `x` is in `seq`.
@@ -9995,31 +9995,6 @@ func dump<T, TargetStream : OutputStreamType>(x: T, inout targetStream: TargetSt
 func dump<T>(x: T, name: String? = default, indent: Int = default, maxDepth: Int = default, maxItems: Int = default) -> T
 
 
-/// Return a lazy `SequenceType` containing pairs (*n*, *x*), where
-/// *n*\ s are consecutive `Int`\ s starting at zero, and *x*\ s are
-/// the elements of `base`::
-///
-///   > for (n, c) in enumerate("Swift") { println("\(n): '\(c)'" )}
-///   0: 'S'
-///   1: 'w'
-///   2: 'i'
-///   3: 'f'
-///   4: 't'
-func enumerate<Seq : SequenceType>(base: Seq) -> EnumerateSequence<Seq>
-
-
-/// Return `true` iff `a1` and `a2` contain the same elements in the
-/// same order.
-func equal<S1 : SequenceType, S2 : SequenceType where S1.Generator.Element == S1.Generator.Element, S1.Generator.Element : Equatable>(a1: S1, a2: S2) -> Bool
-
-
-/// Return true iff `a1` and `a2` contain equivalent elements, using
-/// `isEquivalent` as the equivalence test.  Requires: `isEquivalent`
-/// is an `equivalence relation
-/// <http://en.wikipedia.org/wiki/Equivalence_relation>`_
-func equal<S1 : SequenceType, S2 : SequenceType where S1.Generator.Element == S1.Generator.Element>(a1: S1, a2: S2, isEquivalent: @noescape (S1.Generator.Element, S1.Generator.Element) -> Bool) -> Bool
-
-
 /// Append elements from `newElements` to `x`.  Complexity:
 /// O(N)
 func extend<C : RangeReplaceableCollectionType, S : CollectionType where C.Generator.Element == C.Generator.Element>(inout x: C, newElements: S)
@@ -10027,36 +10002,6 @@ func extend<C : RangeReplaceableCollectionType, S : CollectionType where C.Gener
 
 /// Unconditionally print a `message` and stop execution.
 @noreturn func fatalError(_ message: @autoclosure () -> String = default, file: StaticString = default, line: UWord = default)
-
-
-/// Return an `Array` containing the elements of `source`,
-/// in order, that satisfy the predicate `includeElement`.
-func filter<S : SequenceType>(source: S, includeElement: (S.Generator.Element) -> Bool) -> [S.Generator.Element]
-
-
-/// Returns the first index where `value` appears in `domain` or `nil` if
-/// `value` is not found.
-///
-/// Complexity: O(\ `count(domain)`\ )
-func find<C : CollectionType where C.Generator.Element : Equatable>(domain: C, value: C.Generator.Element) -> C.Index?
-
-
-/// Returns the first element of `x`, or `nil` if `x` is empty.
-func first<C : CollectionType>(x: C) -> C.Generator.Element?
-
-
-/// Return an `Array` containing the results of mapping `transform`
-/// over `source` and flattening the result.
-func flatMap<S : SequenceType, T>(source: S, transform: @noescape (S.Generator.Element) -> [T]) -> [T]
-
-
-/// Return an `Array` containing the results of mapping `transform`
-/// over `source` and flattening the result.
-func flatMap<C : CollectionType, T>(source: C, transform: (C.Generator.Element) -> [T]) -> [T]
-
-
-/// Returns `f(self)!` iff `self` and `f(self)` are not nil.
-func flatMap<T, U>(x: T?, f: @noescape (T) -> U?) -> U?
 
 
 /// Returns a `CVaListPointer` built from `args` that's backed by
@@ -10069,24 +10014,12 @@ func flatMap<T, U>(x: T?, f: @noescape (T) -> U?) -> U?
 func getVaList(args: [CVarArgType]) -> CVaListPointer
 
 
-/// Return the range of `x` 's valid index values.
-///
-/// The result's `endIndex` is the same as that of `x`.  Because
-/// `Range` is half-open, iterating the values of the result produces
-/// all valid subscript arguments for `x`, omitting its `endIndex`.
-func indices<C : CollectionType>(x: C) -> Range<C.Index>
-
-
 /// Insert `newElement` into `x` at index `i`.
 ///
 /// Invalidates all indices with respect to `x`.
 ///
 /// Complexity: O(\ `count(x)`\ ).
 func insert<C : RangeReplaceableCollectionType>(inout x: C, newElement: C.Generator.Element, atIndex i: C.Index)
-
-
-/// Returns `true` iff `x` is empty.
-func isEmpty<C : CollectionType>(x: C) -> Bool
 
 
 /// Returns `true` iff `object` is a non-\ `@objc` class instance with a single
@@ -10177,8 +10110,12 @@ func isUniquelyReferencedNonObjC<T>(inout object: T) -> Bool
 func join<C : ExtensibleCollectionType, S : SequenceType where C == C>(separator: C, elements: S) -> C
 
 
-/// Returns the last element of `x`, or `nil` if `x` is empty.
-func last<C : CollectionType where C.Index : BidirectionalIndexType>(x: C) -> C.Generator.Element?
+/// Augment `s` with lazy methods such as `map`, `filter`, etc.
+func lazy<S : SequenceType>(s: S) -> LazySequence<S>
+
+
+/// Augment `s` with lazy methods such as `map`, `filter`, etc.
+func lazy<S : CollectionType where S.Index : RandomAccessIndexType>(s: S) -> LazyRandomAccessCollection<S>
 
 
 /// Augment `s` with lazy methods such as `map`, `filter`, etc.
@@ -10189,42 +10126,6 @@ func lazy<S : CollectionType where S.Index : BidirectionalIndexType>(s: S) -> La
 func lazy<S : CollectionType where S.Index : ForwardIndexType>(s: S) -> LazyForwardCollection<S>
 
 
-/// Augment `s` with lazy methods such as `map`, `filter`, etc.
-func lazy<S : CollectionType where S.Index : RandomAccessIndexType>(s: S) -> LazyRandomAccessCollection<S>
-
-
-/// Augment `s` with lazy methods such as `map`, `filter`, etc.
-func lazy<S : SequenceType>(s: S) -> LazySequence<S>
-
-
-/// Return true iff a1 precedes a2 in a lexicographical ("dictionary")
-/// ordering, using "<" as the comparison between elements.
-func lexicographicalCompare<S1 : SequenceType, S2 : SequenceType where S1.Generator.Element == S1.Generator.Element, S1.Generator.Element : Comparable>(a1: S1, a2: S2) -> Bool
-
-
-/// Return true iff `a1` precedes `a2` in a lexicographical ("dictionary")
-/// ordering, using `isOrderedBefore` as the comparison between elements.
-///
-/// Requires: isOrderedBefore` is a `strict weak ordering
-/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
-/// over the elements of `a1` and `a2`.
-func lexicographicalCompare<S1 : SequenceType, S2 : SequenceType where S1.Generator.Element == S1.Generator.Element>(a1: S1, a2: S2, isOrderedBefore less: @noescape (S1.Generator.Element, S1.Generator.Element) -> Bool) -> Bool
-
-
-/// Return an `Array` containing the results of mapping `transform`
-/// over `source`.
-func map<S : SequenceType, T>(source: S, transform: (S.Generator.Element) -> T) -> [T]
-
-
-/// Haskell's fmap for Optionals.
-func map<T, U>(x: T?, f: @noescape (T) -> U) -> U?
-
-
-/// Return an `Array` containing the results of mapping `transform`
-/// over `source`.
-func map<C : CollectionType, T>(source: C, transform: (C.Generator.Element) -> T) -> [T]
-
-
 /// Return the greatest argument passed
 func max<T : Comparable>(x: T, y: T, z: T, rest: T...) -> T
 
@@ -10233,22 +10134,12 @@ func max<T : Comparable>(x: T, y: T, z: T, rest: T...) -> T
 func max<T : Comparable>(x: T, y: T) -> T
 
 
-/// Returns the maximum element in `elements`.  Requires:
-/// `elements` is non-empty. O(count(elements))
-func maxElement<R : SequenceType where R.Generator.Element : Comparable>(elements: R) -> R.Generator.Element
-
-
-/// Return the lesser of `x` and `y`
-func min<T : Comparable>(x: T, y: T) -> T
-
-
 /// Return the least argument passed
 func min<T : Comparable>(x: T, y: T, z: T, rest: T...) -> T
 
 
-/// Returns the minimum element in `elements`.  Requires:
-/// `elements` is non-empty. O(count(elements))
-func minElement<R : SequenceType where R.Generator.Element : Comparable>(elements: R) -> R.Generator.Element
+/// Return the lesser of `x` and `y`
+func min<T : Comparable>(x: T, y: T) -> T
 
 
 /// Convert `x` to type `U`, trapping on overflow in -Onone and -O
@@ -10258,19 +10149,8 @@ func minElement<R : SequenceType where R.Generator.Element : Comparable>(element
 /// integer type::
 ///
 ///   func f(x: Int32) {}
-///   func g(x: UInt64) { f(numericCast(x)) }
-func numericCast<T : _UnsignedIntegerType, U : _SignedIntegerType>(x: T) -> U
-
-
-/// Convert `x` to type `U`, trapping on overflow in -Onone and -O
-/// builds.
-///
-/// Typically used to do conversion to any contextually-deduced
-/// integer type::
-///
-///   func f(x: UInt32) {}
 ///   func g(x: Int64) { f(numericCast(x)) }
-func numericCast<T : _SignedIntegerType, U : _UnsignedIntegerType>(x: T) -> U
+func numericCast<T : _SignedIntegerType, U : _SignedIntegerType>(x: T) -> U
 
 
 /// Convert `x` to type `U`, trapping on overflow in -Onone and -O
@@ -10290,42 +10170,24 @@ func numericCast<T : _UnsignedIntegerType, U : _UnsignedIntegerType>(x: T) -> U
 /// Typically used to do conversion to any contextually-deduced
 /// integer type::
 ///
-///   func f(x: Int32) {}
+///   func f(x: UInt32) {}
 ///   func g(x: Int64) { f(numericCast(x)) }
-func numericCast<T : _SignedIntegerType, U : _SignedIntegerType>(x: T) -> U
+func numericCast<T : _SignedIntegerType, U : _UnsignedIntegerType>(x: T) -> U
+
+
+/// Convert `x` to type `U`, trapping on overflow in -Onone and -O
+/// builds.
+///
+/// Typically used to do conversion to any contextually-deduced
+/// integer type::
+///
+///   func f(x: Int32) {}
+///   func g(x: UInt64) { f(numericCast(x)) }
+func numericCast<T : _UnsignedIntegerType, U : _SignedIntegerType>(x: T) -> U
 
 
 /// Returns `true` if `lhs` and `rhs` have a non-empty intersection
 func overlaps<I0 : IntervalType, I1 : IntervalType where I0.Bound == I0.Bound>(lhs: I0, rhs: I1) -> Bool
-
-
-/// Re-order the given `range` of `elements` and return a pivot index
-/// *p*.  
-///
-/// Postcondition: for all *i* in `range.startIndex..<`\ *p*, and *j*
-/// in *p*\ `..<range.endIndex`, `less(elements[`\ *i*\ `],
-/// elements[`\ *j*\ `]) && !less(elements[`\ *j*\ `], 
-/// elements[`\ *p*\ `])`.  Only returns `range.endIndex` when 
-/// `elements` is empty.
-/// Requires: `isOrderedBefore` is a `strict weak ordering
-/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
-/// over `elements`.
-func partition<C : MutableCollectionType where C.Index : RandomAccessIndexType>(inout elements: C, range: Range<C.Index>, isOrderedBefore: (C.Generator.Element, C.Generator.Element) -> Bool) -> C.Index
-
-
-/// Re-order the given `range` of `elements` and return a pivot index
-/// *p*.  
-///
-/// Postcondition: for all *i* in `range.startIndex..<`\ *p*, and *j*
-/// in *p*\ `..<range.endIndex`, `less(elements[`\ *i*\ `],
-/// elements[`\ *j*\ `]) && !less(elements[`\ *j*\ `], 
-/// elements[`\ *p*\ `])`.  Only returns `range.endIndex` when 
-/// `elements` is empty.
-/// Requires: The less-than operator (`func <`) defined in the `Comparable`
-/// conformance is a `strict weak ordering
-/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
-/// over `elements`.
-func partition<C : MutableCollectionType where C.Index : RandomAccessIndexType, C.Generator.Element : Comparable>(inout elements: C, range: Range<C.Index>) -> C.Index
 
 
 /// Check a necessary condition for making forward progress.
@@ -10427,12 +10289,6 @@ func prefix<S : Sliceable>(s: S, maxLength: Int) -> S.SubSlice
 @inline(never) func println<T, TargetStream : OutputStreamType>(value: T, inout target: TargetStream)
 
 
-/// Return the result of repeatedly calling `combine` with an
-/// accumulated value initialized to `initial` and each element of
-/// `sequence`, in turn.
-func reduce<S : SequenceType, U>(sequence: S, initial: U, combine: @noescape (U, S.Generator.Element) -> U) -> U
-
-
 /// Produce a mirror for any value. If the value's type conforms to Reflectable,
 /// invoke its getMirror() method; otherwise, fall back to an implementation
 /// in the runtime that structurally reflects values of any type.
@@ -10472,11 +10328,6 @@ func removeLast<C : RangeReplaceableCollectionType where C.Index : Bidirectional
 func removeRange<C : RangeReplaceableCollectionType>(inout x: C, subRange: Range<C.Index>)
 
 
-/// Return an `Array` containing the elements of `source` in reverse
-/// order.
-func reverse<C : CollectionType where C.Index : BidirectionalIndexType>(source: C) -> [C.Generator.Element]
-
-
 /// Returns the contiguous memory footprint of `T`.
 ///
 /// Does not include any dynamically-allocated or "remote" storage.
@@ -10492,59 +10343,7 @@ func sizeof<T>(_: T.Type) -> Int
 /// same regardless of how many stored properties `a` has.
 func sizeofValue<T>(_: T) -> Int
 
-
-/// Sort `collection` in-place.
-///
-/// The sorting algorithm is not stable (can change the relative order of
-/// elements that compare equal).
-///
-/// Requires: The less-than operator (`func <`) defined in the `Comparable`
-/// conformance is a `strict weak ordering
-/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
-/// over `elements`.
-func sort<C : MutableCollectionType where C.Index : RandomAccessIndexType, C.Generator.Element : Comparable>(inout collection: C)
-
-func sort<T : Comparable>(inout array: [T])
-
-func sort<T>(inout array: [T], isOrderedBefore: (T, T) -> Bool)
-
 func sort<T : Comparable>(inout array: ContiguousArray<T>)
-
-
-/// Sort `collection` in-place according to `isOrderedBefore`.
-///
-/// The sorting algorithm is not stable (can change the relative order of
-/// elements for which `isOrderedBefore` does not establish an order).
-///
-/// Requires: `isOrderedBefore` is a `strict weak ordering
-/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
-/// over `elements`.
-func sort<C : MutableCollectionType where C.Index : RandomAccessIndexType>(inout collection: C, isOrderedBefore: (C.Generator.Element, C.Generator.Element) -> Bool)
-
-func sort<T>(inout array: ContiguousArray<T>, isOrderedBefore: (T, T) -> Bool)
-
-
-/// Return an `Array` containing the sorted elements of `source`{according}.
-///
-/// The sorting algorithm is not stable (can change the relative order of
-/// elements that compare equal).
-///
-/// Requires: The less-than operator (`func <`) defined in the `Comparable`
-/// conformance is a `strict weak ordering
-/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
-/// over `elements`.
-func sorted<C : SequenceType where C.Generator.Element : Comparable>(source: C) -> [C.Generator.Element]
-
-
-/// Return an `Array` containing the sorted elements of `source`{according}.
-///
-/// The sorting algorithm is not stable (can change the relative order of
-/// elements for which `isOrderedBefore` does not establish an order).
-///
-/// Requires: `isOrderedBefore` is a `strict weak ordering
-/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
-/// over `elements`.
-func sorted<C : SequenceType>(source: C, isOrderedBefore: (C.Generator.Element, C.Generator.Element) -> Bool) -> [C.Generator.Element]
 
 
 /// Insert `newElements` into `x` at index `i`
@@ -10567,18 +10366,6 @@ func splice<C : RangeReplaceableCollectionType, S : CollectionType where C.Gener
 func split<S : Sliceable, R : BooleanType>(elements: S, maxSplit: Int = default, allowEmptySlices: Bool = default, #isSeparator: @noescape (S.Generator.Element) -> R) -> [S.SubSlice]
 
 
-/// Return true iff `s` begins with elements equivalent to those of
-/// `prefix`, using `isEquivalent` as the equivalence test.
-///
-/// Requires: `isEquivalent` is an `equivalence relation
-/// <http://en.wikipedia.org/wiki/Equivalence_relation>`_
-func startsWith<S0 : SequenceType, S1 : SequenceType where S0.Generator.Element == S0.Generator.Element>(s: S0, prefix: S1, isEquivalent: @noescape (S0.Generator.Element, S0.Generator.Element) -> Bool) -> Bool
-
-
-/// Return true iff the the initial elements of `s` are equal to `prefix`.
-func startsWith<S0 : SequenceType, S1 : SequenceType where S0.Generator.Element == S0.Generator.Element, S0.Generator.Element : Equatable>(s: S0, prefix: S1) -> Bool
-
-
 /// Return the sequence of values (`start`, `start + stride`, `start +
 /// stride + stride`, ... *last*) where *last* is the last value in
 /// the progression less than or equal to `end`.
@@ -10592,20 +10379,6 @@ func stride<T : Strideable>(from start: T, through end: T, by stride: T.Stride) 
 /// stride + stride`, ... *last*) where *last* is the last value in
 /// the progression that is less than `end`.
 func stride<T : Strideable>(from start: T, to end: T, by stride: T.Stride) -> StrideTo<T>
-
-
-/// Returns the result of `debugPrint`\ 'ing `x` into a `String`
-func toDebugString<T>(x: T) -> String
-
-
-/// Returns the result of `print`\ 'ing `x` into a `String`
-@inline(never) func toString<T>(x: T) -> String
-
-
-/// Return an underestimate of the number of elements in the given
-/// sequence, without consuming the sequence.  For Sequences that are
-/// actually Collections, this will return count(x)
-func underestimateCount<T : SequenceType>(x: T) -> Int
 
 
 /// Returns the least possible interval between distinct instances of
@@ -10736,6 +10509,233 @@ func withVaList<R>(builder: VaListBuilder, f: @noescape CVaListPointer -> R) -> 
 /// the elements of the `i`\ th pair are the `i`\ th elements of each
 /// underlying sequence.
 func zip<S0 : SequenceType, S1 : SequenceType>(s0: S0, s1: S1) -> Zip2<S0, S1>
+
+
+/// Return a lazy `SequenceType` containing pairs (*n*, *x*), where
+/// *n*\ s are consecutive `Int`\ s starting at zero, and *x*\ s are
+/// the elements of `base`::
+///
+///   > for (n, c) in enumerate("Swift") { println("\(n): '\(c)'" )}
+///   0: 'S'
+///   1: 'w'
+///   2: 'i'
+///   3: 'f'
+///   4: 't'
+func enumerate<Seq : SequenceType>(base: Seq) -> EnumerateSequence<Seq>
+
+
+/// Return `true` iff `a1` and `a2` contain the same elements in the
+/// same order.
+func equal<S1 : SequenceType, S2 : SequenceType where S1.Generator.Element == S1.Generator.Element, S1.Generator.Element : Equatable>(a1: S1, a2: S2) -> Bool
+
+
+/// Return true iff `a1` and `a2` contain equivalent elements, using
+/// `isEquivalent` as the equivalence test.  Requires: `isEquivalent`
+/// is an `equivalence relation
+/// <http://en.wikipedia.org/wiki/Equivalence_relation>`_
+func equal<S1 : SequenceType, S2 : SequenceType where S1.Generator.Element == S1.Generator.Element>(a1: S1, a2: S2, isEquivalent: @noescape (S1.Generator.Element, S1.Generator.Element) -> Bool) -> Bool
+
+
+/// Return an `Array` containing the elements of `source`,
+/// in order, that satisfy the predicate `includeElement`.
+func filter<S : SequenceType>(source: S, includeElement: (S.Generator.Element) -> Bool) -> [S.Generator.Element]
+
+
+/// Returns the first index where `value` appears in `domain` or `nil` if
+/// `value` is not found.
+///
+/// Complexity: O(\ `count(domain)`\ )
+func find<C : CollectionType where C.Generator.Element : Equatable>(domain: C, value: C.Generator.Element) -> C.Index?
+
+
+/// Returns the first element of `x`, or `nil` if `x` is empty.
+func first<C : CollectionType>(x: C) -> C.Generator.Element?
+
+
+/// Return an `Array` containing the results of mapping `transform`
+/// over `source` and flattening the result.
+func flatMap<S : SequenceType, T>(source: S, transform: @noescape (S.Generator.Element) -> [T]) -> [T]
+
+
+/// Return an `Array` containing the results of mapping `transform`
+/// over `source` and flattening the result.
+func flatMap<C : CollectionType, T>(source: C, transform: (C.Generator.Element) -> [T]) -> [T]
+
+
+/// Returns `f(self)!` iff `self` and `f(self)` are not nil.
+func flatMap<T, U>(x: T?, f: @noescape (T) -> U?) -> U?
+
+
+/// Return the range of `x` 's valid index values.
+///
+/// The result's `endIndex` is the same as that of `x`.  Because
+/// `Range` is half-open, iterating the values of the result produces
+/// all valid subscript arguments for `x`, omitting its `endIndex`.
+func indices<C : CollectionType>(x: C) -> Range<C.Index>
+
+
+/// Returns `true` iff `x` is empty.
+func isEmpty<C : CollectionType>(x: C) -> Bool
+
+
+/// Returns the last element of `x`, or `nil` if `x` is empty.
+func last<C : CollectionType where C.Index : BidirectionalIndexType>(x: C) -> C.Generator.Element?
+
+
+/// Return true iff a1 precedes a2 in a lexicographical ("dictionary")
+/// ordering, using "<" as the comparison between elements.
+func lexicographicalCompare<S1 : SequenceType, S2 : SequenceType where S1.Generator.Element == S1.Generator.Element, S1.Generator.Element : Comparable>(a1: S1, a2: S2) -> Bool
+
+
+/// Return true iff `a1` precedes `a2` in a lexicographical ("dictionary")
+/// ordering, using `isOrderedBefore` as the comparison between elements.
+///
+/// Requires: isOrderedBefore` is a `strict weak ordering
+/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
+/// over the elements of `a1` and `a2`.
+func lexicographicalCompare<S1 : SequenceType, S2 : SequenceType where S1.Generator.Element == S1.Generator.Element>(a1: S1, a2: S2, isOrderedBefore less: @noescape (S1.Generator.Element, S1.Generator.Element) -> Bool) -> Bool
+
+
+/// Return an `Array` containing the results of mapping `transform`
+/// over `source`.
+func map<S : SequenceType, T>(source: S, transform: (S.Generator.Element) -> T) -> [T]
+
+
+/// Haskell's fmap for Optionals.
+func map<T, U>(x: T?, f: @noescape (T) -> U) -> U?
+
+
+/// Return an `Array` containing the results of mapping `transform`
+/// over `source`.
+func map<C : CollectionType, T>(source: C, transform: (C.Generator.Element) -> T) -> [T]
+
+
+/// Returns the maximum element in `elements`.  Requires:
+/// `elements` is non-empty. O(count(elements))
+func maxElement<R : SequenceType where R.Generator.Element : Comparable>(elements: R) -> R.Generator.Element
+
+
+/// Returns the minimum element in `elements`.  Requires:
+/// `elements` is non-empty. O(count(elements))
+func minElement<R : SequenceType where R.Generator.Element : Comparable>(elements: R) -> R.Generator.Element
+
+
+/// Re-order the given `range` of `elements` and return a pivot index
+/// *p*.  
+///
+/// Postcondition: for all *i* in `range.startIndex..<`\ *p*, and *j*
+/// in *p*\ `..<range.endIndex`, `less(elements[`\ *i*\ `],
+/// elements[`\ *j*\ `]) && !less(elements[`\ *j*\ `], 
+/// elements[`\ *p*\ `])`.  Only returns `range.endIndex` when 
+/// `elements` is empty.
+/// Requires: `isOrderedBefore` is a `strict weak ordering
+/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
+/// over `elements`.
+func partition<C : MutableCollectionType where C.Index : RandomAccessIndexType>(inout elements: C, range: Range<C.Index>, isOrderedBefore: (C.Generator.Element, C.Generator.Element) -> Bool) -> C.Index
+
+
+/// Re-order the given `range` of `elements` and return a pivot index
+/// *p*.  
+///
+/// Postcondition: for all *i* in `range.startIndex..<`\ *p*, and *j*
+/// in *p*\ `..<range.endIndex`, `less(elements[`\ *i*\ `],
+/// elements[`\ *j*\ `]) && !less(elements[`\ *j*\ `], 
+/// elements[`\ *p*\ `])`.  Only returns `range.endIndex` when 
+/// `elements` is empty.
+/// Requires: The less-than operator (`func <`) defined in the `Comparable`
+/// conformance is a `strict weak ordering
+/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
+/// over `elements`.
+func partition<C : MutableCollectionType where C.Index : RandomAccessIndexType, C.Generator.Element : Comparable>(inout elements: C, range: Range<C.Index>) -> C.Index
+
+
+/// Return the result of repeatedly calling `combine` with an
+/// accumulated value initialized to `initial` and each element of
+/// `sequence`, in turn.
+func reduce<S : SequenceType, U>(sequence: S, initial: U, combine: @noescape (U, S.Generator.Element) -> U) -> U
+
+
+/// Return an `Array` containing the elements of `source` in reverse
+/// order.
+func reverse<C : CollectionType where C.Index : BidirectionalIndexType>(source: C) -> [C.Generator.Element]
+
+
+/// Sort `collection` in-place.
+///
+/// The sorting algorithm is not stable (can change the relative order of
+/// elements that compare equal).
+///
+/// Requires: The less-than operator (`func <`) defined in the `Comparable`
+/// conformance is a `strict weak ordering
+/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
+/// over `elements`.
+func sort<C : MutableCollectionType where C.Index : RandomAccessIndexType, C.Generator.Element : Comparable>(inout collection: C)
+
+func sort<T : Comparable>(inout array: [T])
+
+func sort<T>(inout array: [T], isOrderedBefore: (T, T) -> Bool)
+
+
+/// Sort `collection` in-place according to `isOrderedBefore`.
+///
+/// The sorting algorithm is not stable (can change the relative order of
+/// elements for which `isOrderedBefore` does not establish an order).
+///
+/// Requires: `isOrderedBefore` is a `strict weak ordering
+/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
+/// over `elements`.
+func sort<C : MutableCollectionType where C.Index : RandomAccessIndexType>(inout collection: C, isOrderedBefore: (C.Generator.Element, C.Generator.Element) -> Bool)
+
+func sort<T>(inout array: ContiguousArray<T>, isOrderedBefore: (T, T) -> Bool)
+
+
+/// Return an `Array` containing the sorted elements of `source`{according}.
+///
+/// The sorting algorithm is not stable (can change the relative order of
+/// elements that compare equal).
+///
+/// Requires: The less-than operator (`func <`) defined in the `Comparable`
+/// conformance is a `strict weak ordering
+/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
+/// over `elements`.
+func sorted<C : SequenceType where C.Generator.Element : Comparable>(source: C) -> [C.Generator.Element]
+
+
+/// Return an `Array` containing the sorted elements of `source`{according}.
+///
+/// The sorting algorithm is not stable (can change the relative order of
+/// elements for which `isOrderedBefore` does not establish an order).
+///
+/// Requires: `isOrderedBefore` is a `strict weak ordering
+/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
+/// over `elements`.
+func sorted<C : SequenceType>(source: C, isOrderedBefore: (C.Generator.Element, C.Generator.Element) -> Bool) -> [C.Generator.Element]
+
+
+/// Return true iff `s` begins with elements equivalent to those of
+/// `prefix`, using `isEquivalent` as the equivalence test.
+///
+/// Requires: `isEquivalent` is an `equivalence relation
+/// <http://en.wikipedia.org/wiki/Equivalence_relation>`_
+func startsWith<S0 : SequenceType, S1 : SequenceType where S0.Generator.Element == S0.Generator.Element>(s: S0, prefix: S1, isEquivalent: @noescape (S0.Generator.Element, S0.Generator.Element) -> Bool) -> Bool
+
+
+/// Return true iff the the initial elements of `s` are equal to `prefix`.
+func startsWith<S0 : SequenceType, S1 : SequenceType where S0.Generator.Element == S0.Generator.Element, S0.Generator.Element : Equatable>(s: S0, prefix: S1) -> Bool
+
+
+/// Returns the result of `debugPrint`\ 'ing `x` into a `String`
+func toDebugString<T>(x: T) -> String
+
+
+/// Returns the result of `print`\ 'ing `x` into a `String`
+@inline(never) func toString<T>(x: T) -> String
+
+
+/// Return an underestimate of the number of elements in the given
+/// sequence, without consuming the sequence.  For Sequences that are
+/// actually Collections, this will return count(x)
+func underestimateCount<T : SequenceType>(x: T) -> Int
 
 func |(lhs: Int32, rhs: Int32) -> Int32
 
